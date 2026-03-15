@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Pray2day</title>
+    
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2907/2907997.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Pray2day">
+
+    <style>
+        :root { --primary: #6c5ce7; --bg: #f4f7f6; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        
+        .app-container { width: 350px; background: white; padding: 30px; border-radius: 40px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); text-align: center; }
+
+        /* Animação do Título */
+        h2 { opacity: 0; animation: fadeIn 1.5s forwards; color: var(--primary); font-size: 28px; margin-bottom: 25px; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .card { background: #f8f9fa; padding: 20px; border-radius: 20px; margin: 20px 0; }
+        button { background: var(--primary); color: white; border: none; padding: 15px; border-radius: 20px; width: 100%; font-weight: bold; cursor: pointer; margin-top: 10px; transition: 0.3s; }
+        button:hover { filter: brightness(1.1); }
+        
+        .avatar-option { cursor: pointer; font-size: 30px; display: inline-block; margin: 10px; padding: 15px; border: 3px solid #eee; border-radius: 15px; transition: 0.2s; }
+        .selected { border: 3px solid var(--primary) !important; background: #e8e6ff; transform: scale(1.05); }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <h2 id="titulo">Pray2day</h2>
+    
+    <div id="config-area" style="display:none;">
+        <p>Escolhe o teu guardião:</p>
+        <div onclick="selectAvatar('Cão', '🐶', this)" class="avatar-option">🐶</div>
+        <div onclick="selectAvatar('Gato', '🐱', this)" class="avatar-option">🐱</div>
+        <div onclick="selectAvatar('Carlo', '👨‍💻', this)" class="avatar-option">👨‍💻</div>
+        <div onclick="selectAvatar('Joana', '🛡️', this)" class="avatar-option">🛡️</div>
+        
+        <div style="margin-top:20px; text-align:left;">
+            <p>Orações diárias:</p>
+            <label><input type="checkbox" value="Pai Nosso"> Pai Nosso</label><br>
+            <label><input type="checkbox" value="Ave Maria"> Ave Maria</label><br>
+            <label><input type="checkbox" value="Terço"> Terço</label>
+        </div>
+        <button onclick="guardarMetas()" style="margin-top:20px">Começar Jornada</button>
+    </div>
+
+    <div id="main-area" style="display:none;">
+        <div class="card">
+            <div id="avatar" style="font-size:70px"></div>
+            <h3 id="avatar-name"></h3>
+            <p>Nível espiritual: <strong id="nivel">1</strong></p>
+        </div>
+        <button id="btn-concluir" onclick="concluir()">Concluir Oração de Hoje</button>
+        <button onclick="resetar()" style="background:none; color:#b2bec3; font-size:12px; margin-top:15px;">Redefinir App</button>
+    </div>
+
+    <p style="font-size:10px; color:#ccc; margin-top:20px;">FEITO EM PORTUGAL 🇵🇹</p>
+</div>
+
+<script>
+    let state = JSON.parse(localStorage.getItem('pray2day_data')) || { name: null, icon: null, nivel: 1, lastDate: null, metas: [] };
+
+    function render() {
+        if (!state.name || state.metas.length === 0) {
+            document.getElementById('config-area').style.display = 'block';
+        } else {
+            document.getElementById('main-area').style.display = 'block';
+            document.getElementById('avatar').innerText = state.icon;
+            document.getElementById('avatar-name').innerText = state.name;
+            document.getElementById('nivel').innerText = state.nivel;
+
+            const hoje = new Date().toISOString().split('T')[0];
+            if (state.lastDate === hoje) {
+                const btn = document.getElementById('btn-concluir');
+                btn.disabled = true; btn.innerText = "Meta cumprida hoje! ✨"; btn.style.background = "#b2bec3";
+            }
+        }
+    }
+
+    function selectAvatar(name, icon, element) { 
+        state.name = name; 
+        state.icon = icon; 
+        document.querySelectorAll('.avatar-option').forEach(el => el.classList.remove('selected'));
+        element.classList.add('selected');
+        localStorage.setItem('pray2day_data', JSON.stringify(state)); 
+    }
+
+    function guardarMetas() {
+        const checks = document.querySelectorAll('input:checked');
+        if(checks.length === 0) return alert("Escolhe pelo menos uma oração!");
+        state.metas = Array.from(checks).map(c => c.value);
+        localStorage.setItem('pray2day_data', JSON.stringify(state));
+        location.reload();
+    }
+
+    function concluir() {
+        state.nivel++;
+        state.lastDate = new Date().toISOString().split('T')[0];
+        localStorage.setItem('pray2day_data', JSON.stringify(state));
+        alert("Parabéns! O teu " + state.name + " está a brilhar!");
+        location.reload();
+    }
+
+    function resetar() { if(confirm("Apagar tudo?")) { localStorage.clear(); location.reload(); } }
+
+    render();
+</script>
+</body>
+</html>
