@@ -1,0 +1,28 @@
+{
+  "background_color": "#ffffff",
+  "description": "Pray2day é uma app gratuita para organizar as tuas orações diárias, como o Pai Nosso e o Terço, e acompanhar o teu crescimento espiritual com um guardião personalizado.",
+  "dir": "ltr",
+  "display": "standalone",
+  "name": "Pray2day",
+  "orientation": "any",
+  "scope": "/",
+  "short_name": "Pray2day",
+  "start_url": "/",
+  "theme_color": "#ffffff",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/2907/2907997.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "isSquare": true,
+      "isPng": true,
+      "isWebp": false,
+      "isJpg": false,
+      "width": 512,
+      "is512x512": true,
+      "is256x256": false,
+      "is192x192": false
+    }
+  ],
+  "id": "com.pray2day.app"
+}
